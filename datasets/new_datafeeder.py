@@ -3,7 +3,7 @@ import random
 import numpy as np
 import tensorflow as tf
 
-from text import cmudict, text_to_sequence
+from text import text_to_sequence
 
 def get_dataset(metadata, data_dir, hparams): 
     cleaner_names = [x.strip() for x in hparams.cleaners.split(',')]
@@ -47,14 +47,12 @@ def get_dataset(metadata, data_dir, hparams):
                                                       'mel_targets' : [None, hparams.num_mels], 
                                                       'linear_targets' : [None, hparams.num_freq]
                                                      }
-                                                    )
-    
+                                                    )    
     dataset_element = dataset_element.padded_batch(batch_size = hparams.batch_size, 
                                                    padded_shapes = {'input' : [None], 
                                                       'input_lengths' : [], 
                                                       'mel_targets' : [None, hparams.num_mels], 
-                                                      'linear_targets' : [None, hparams.num_freq]}).repeat()
-    
+                                                      'linear_targets' : [None, hparams.num_freq]}).prefetch(1).repeat()
     next_element = dataset_element.make_one_shot_iterator().get_next()  
     
     return next_element
