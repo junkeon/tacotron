@@ -6,6 +6,7 @@ from librosa import effects
 from models import create_model
 from text import text_to_sequence
 from util import audio
+import hgtk
 
 
 class Synthesizer:
@@ -27,6 +28,7 @@ class Synthesizer:
 
     def synthesize(self, text):
         cleaner_names = [x.strip() for x in hparams.cleaners.split(',')]
+        text = hgtk.text.decompose(text, compose_code='')
         seq = text_to_sequence(text, cleaner_names)
         feed_dict = {
             self.model.inputs: [np.asarray(seq, dtype=np.int32)],
